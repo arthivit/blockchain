@@ -1,14 +1,36 @@
-# Arthi Vithiananthan - Blockchain Project 1
-## What features and functionality did you add to your blockchain? Why? 
-Feature-wise, I added two new app routes: 'make_block' and 'my_transactions'. I also changed the parameters of each block to be 'index,' 'time mined,' 'timestamp, 'proof,' 'previous_hash,' 'data,' 'sender,' and 'reciever.' The last three parameters are user inputted (from the request.get_json() function) through Postman.
+# Blockchain Spring 2024
 
-### make_block
-With 'make_block,' I sought out to reflect the process of blocks being added to the ledger from a pool of unconfirmed transactions. The 'make_block' function allows users to "make" their transaction and then have it added to the pool (rather than directly to the chain). Then, I edited the pre-existing 'mine_block' function to add blocks from the pool of unmined blocks to the ledger. If the user tried to mine a block with nothing in the pool, they would recieve an output stating this, rather than just crashing.  
-### my_transactions
-For 'my_transactions,' I utilized the dictionary quality of the blocks to return an array of all blocks with a case-specific 'sender' value. To do this, I created a loop to iterate through the ledger array, checking the value for the 'sender' key of each block. 
+## Blockchain 
+### Endpoint Collections 
+  - [Basic Blockchain](https://nobles-blockchain.postman.co/workspace/New-Team-Workspace~6ee04c91-09b2-4066-a420-2d5e83667e0d/collection/24854847-a4059b9c-1111-4056-82e7-6c845caf1603?action=share&creator=24854847)
+  - [Basic Blockchain Expanded](https://nobles-blockchain.postman.co/workspace/New-Team-Workspace~6ee04c91-09b2-4066-a420-2d5e83667e0d/collection/24854847-852421c2-4abb-4502-a0cf-e8117949fb49?action=share&creator=24854847)
 
-## What is a class in Python/Object-Oriented Programming? What is an endpoint? What is a server? What is Flask? What is Postman doing?
-**A class** is the blueprint for a user-created object which includes a constructor, class methods, variables, and more specific components for this special data type. **An API endpoint** is a specific place data can be sent from/recieved at within the API. **A server** is the channel in which data requests are made. Flask is a framework that helps create simple apps. Postman is acting as our API server, and the endpoints are the specific app routes in Postman.
+### Running the Project
+1. To run the application, use the following command: ```python basic_blockchain_expanded.py```. The application will start a Flask server on http://127.0.0.1:5000.
+## Cryptocurrency
 
-## What you intended to do vs. what you actually completed. What challenges did you face?
-I wanted to create a web interface for this project as well, but there was more googling needed (about json, Python-HTML compatibility, etc) than I had time for. I also struggled with some of the json functions which required me to play around for a while with my code to figure out how to make it work. 
+MontyCoin is a simple implementation of a blockchain and cryptocurrency.
+
+### Endpoint Collections
+  - [Cryptocurrency](https://nobles-blockchain.postman.co/workspace/New-Team-Workspace~6ee04c91-09b2-4066-a420-2d5e83667e0d/collection/24854847-5aaeccc5-c743-4bf6-a1a2-5f3ec30ad654?action=share&creator=24854847)
+  - [Transaction Picker](https://nobles-blockchain.postman.co/workspace/Blockchain~6ee04c91-09b2-4066-a420-2d5e83667e0d/collection/31591599-4b3fe1aa-9f86-41a1-9705-ac6bd2beabe5?action=share&creator=24854847)
+
+### Running the Project
+1. Navigate to scripts directory
+2. Run ```chmod +x run.sh``` and ```chmod +x stop.sh``` to make scripts executable
+3. Run the servers (nodes) with ```./run.sh```. This will start 4 nodes on http://127.0.0.1:5000 - http://127.0.0.1:5003
+4. Stop the nodes with  ```./stop.sh```
+
+### Project Improvements
+1. **Transaction Validation**:  Implement a system to validate transactions before they are added to the blockchain. This could include checking if the sender has enough balance to perform the transaction.
+2. **Wallets**: Create a Wallet class that generates private and public keys for users. The private key can be used to sign transactions and the public key can be used as the user's address.
+3. **Transaction Signing and Verification**: Implement a system where transactions are signed using the sender's private key and can be verified by others using the sender's public key. This ensures that only the owner of a wallet can make transactions from it.
+4. **Improved Mining Process**: Modify the mining process. For example, you could implement a difficulty adjustment algorithm that adjusts the difficulty of the mining process based on the total computational power of the network.
+5. **Custom Hashing Algorithm**: Implement a custom hashing algorithm for the blockchain. This could be a great way to learn about cryptographic hash functions.
+6. **Peer-to-Peer Network**: Instead of manually adding nodes, implement a peer-to-peer network where nodes can discover each other.
+7. **GUI**: Create a graphical user interface (GUI) for easier interaction with the blockchain.
+8. **Error Handling**: Improve error handling and return appropriate HTTP status codes and messages when errors occur.
+9. **Data Persistence**: Implement a system to store the blockchain data persistently.
+10.** Reward System**: Implement a reward system for miners.
+
+### Smart Contracts
