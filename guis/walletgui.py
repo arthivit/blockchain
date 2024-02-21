@@ -37,8 +37,7 @@ class WalletGui:
         self.transactions_label.grid(row=9, column=0, pady=3)
 
 
-# buttons
-
+# buttons functions
    
     def send_funds(self):
         self.send_label.config(text="")

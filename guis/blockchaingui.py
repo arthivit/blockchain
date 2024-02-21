@@ -183,7 +183,7 @@ class BlockchainGui:
         self.transactions_label_reciever.config(text=f'Reciever Transactions: {reciever}')
         self.transactions_label_reciever.after(3000, lambda: self.transactions_label_reciever.config(text=''))
         
-        
+
 
 if __name__ == "__main__":
     root = tk.Tk()
