@@ -42,7 +42,7 @@ class WalletGui:
    
     def send_funds(self):
         self.send_label.config(text="")
-        recipient = "example@recipient.com"  # Get recipient from user input
+        recipient = ""  # Get recipient from user input
         amount = 10  # Get amount from user input
 
         # Send request to Flask endpoint
