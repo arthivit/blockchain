@@ -188,7 +188,7 @@ class BlockchainGui:
 if __name__ == "__main__":
     root = tk.Tk()
     app = BlockchainGui(root)
-    root.geometry("600x700")
+    root.geometry("600x600")
     root.configure(background='pale turquoise')
     root.mainloop()
 
