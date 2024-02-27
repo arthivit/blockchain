@@ -52,13 +52,15 @@ def add_balance():
     amount = int(data['amount'])
     tradnum = data['tradcur']
     the_response = {'balance':'', 'message': ''}
-    if amount > 0:
-        wallet.balance += amount
-        the_response = {'balance': wallet.balance, 'message': 'Funds added successfully!'}
-    else:
+    if tradnum == 'n/a':
         wallet.balance -= amount
         the_response = {'balance': wallet.balance, 'message': 'Funds removed successfully!'}
+    else:
+        wallet.balance += amount
+        the_response = {'balance': wallet.balance, 'message': 'Funds added successfully!'}
     return jsonify(the_response)
+
+    
       
 
 

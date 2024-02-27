@@ -15,14 +15,14 @@ class Blockchain:
     def __init__(self):
         self.chain = []
         self.transaction_pool = []
-        self.create_block(proof=1, previous_hash='0', sender='GENESIS', reciever='BLOCK')
+        self.create_block(proof=1, previous_hash='0', sender='GENESIS', receiver='BLOCK')
         self.nodes = set()
         
-    def create_block(self, proof, previous_hash, sender, reciever):
+    def create_block(self, proof, previous_hash, sender, receiver):
         block = {'index': len(self.chain) + 1,
                  'timestamp': str(datetime.datetime.now()),
                  'sender': sender,
-                 'reciever': reciever,
+                 'receiver': receiver,
                  'proof': proof,
                  'previous_hash': previous_hash,
                  'transactions': self.transaction_pool}
@@ -79,9 +79,11 @@ class Blockchain:
 
     def replace_chain(self):
         network = self.nodes
+        print(self.nodes)
         longest_chain = None
         max_length = len(self.chain)
         for node in network:
+            print(node)
             response = requests.get(f'http://{node}/get_chain')
             if response.status_code == 200:
                 length = response.json()['length']
@@ -108,26 +110,28 @@ blockchain = Blockchain()
 @app.route('/mine_block', methods=['GET'])
 # Mining a new block
 def mine_block():
-    if len(transaction_pool) == 0:
+    if len(blockchain.transaction_pool) == 0:
         response = {'message': 'There are no blocks to mine from transaction pool.'}
+        return jsonify(response), 200
     else:
         previous_block = blockchain.get_previous_block()
         previous_proof = previous_block['proof']
         proof = blockchain.proof_of_work(previous_proof)
         previous_hash = blockchain.hash(previous_block)
-        transaction = transaction_pool[0]
+        transaction = blockchain.transaction_pool[0]
         sender = transaction['sender']
-        reciever = transaction['reciever']
-        block = blockchain.create_block(proof, previous_hash, sender, reciever)
+        receiver = transaction['receiver']
+        block = blockchain.create_block(proof, previous_hash, sender, receiver)
         response = {'message': 'Congratulations, you just mined a block!',
                     'index': block['index'],
                     'timestamp': block['timestamp'],
                     'proof': block['proof'],
                     'sender': block['sender'],
-                    'reciever': block['reciever'],
+                    'receiver': block['receiver'],
                     'previous_hash': block['previous_hash'],
                     'transactions': block['transactions']}
-    return jsonify(response), 200
+        blockchain.transaction_pool.remove(transaction)
+        return jsonify(response), 200
 
 
 @app.route('/get_chain', methods=['GET'])
@@ -200,7 +204,7 @@ def see_transactions():
         if block['sender'] == key:
            sender_list.append(block)
         else:
-            if block['reciever'] == key:
+            if block['receiver'] == key:
                 reciever_list.append(block)
     if len(reciever_list) > 0:
         the_response = {'sender_transactions': sender_list, 'reciever_transactions': reciever_list}

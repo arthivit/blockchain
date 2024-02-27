@@ -154,13 +154,17 @@ class WalletGui:
         message = response.json()['message']
 
         trans_amount = int(self.transaction_data["amount"])
-        bal_response = requests.get("http://localhost:5010/get_balance")
+        bal_response = requests.post("http://localhost:5010/add_balance", json = {'amount': trans_amount, 'tradcur' : 'n/a'})
         self.balance = int(bal_response.json()["balance"])
         self.balance_label.config(text=f"Balance: ${self.balance}")
 
+
+        self.add_transaction_label.delete("1.0","end")
         self.add_transaction_label.insert(tk.INSERT, f'{message}')
         self.add_transaction_label.grid(row=5, column=1)
-        self.add_transaction_label.after(3000, lambda: self.add_transaction_label.grid_forget())
+        self.add_transaction_label.after(3000, lambda
+        : self.add_transaction_label.grid_forget())
+        
         
         
 
@@ -172,7 +176,8 @@ class WalletGui:
         self.pubkey_label.insert(tk.INSERT, f"Public Key: {self.pubkey}")
         self.pubkey_label.configure(state ='disabled')   #MAKE A LIST
         self.pubkey_label.grid(row=7, column=1, pady=2)
-        self.pubkey_label.after(3000, lambda:  self.pubkey_label.grid_forget())
+        self.pubkey_label.after(3000, lambda: self.pubkey_label.grid_forget())
+    
 
 # add money to balance
     def add_balance(self):
@@ -224,10 +229,13 @@ class WalletGui:
         self.transactions_sender.grid(row=5, column=1)
         self.transactions_sender.insert(tk.INSERT,f'Sender Transactions: {sender}')
         self.transactions_sender.after(3000, lambda: self.transactions_sender.grid_forget())
+        self.transactions_sender.delete("1.0","end")
+        
 
         self.transactions_reciever.grid(row=6, column=1)
         self.transactions_reciever.insert(tk.INSERT,f'Reciever Transactions: {receiver}')
         self.transactions_reciever.after(3000, lambda: self.transactions_reciever.grid_forget())
+        self.transactions_reciever.delete("1.0","end")
 
 if __name__ == "__main__":
     root = tk.Tk()
