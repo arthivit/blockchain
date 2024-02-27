@@ -7,7 +7,7 @@ from uuid import uuid4
 from urllib.parse import urlparse
 import argparse
 import tkinter as tk
-from wallet import Wallet
+#from wallet import Wallet
 #not totally sure if i need to import this or not
 
 #SERVER FILE
@@ -66,10 +66,12 @@ class Blockchain:
         return True
 
     def add_transaction(self, sender, receiver, amount):
-        self.transaction_pool.append({'sender': sender,
+        new_trans = {'sender': sender,
                                   'receiver': receiver,
-                                  'amount': amount})
-        return len(transaction_pool)
+                                  'amount': amount}
+        self.transaction_pool.append(new_trans)
+        print(new_trans)
+        return len(self.transaction_pool)
 
     def add_node(self, address):
         parsed_url = urlparse(address)
@@ -108,7 +110,6 @@ blockchain = Blockchain()
 def mine_block():
     if len(transaction_pool) == 0:
         response = {'message': 'There are no blocks to mine from transaction pool.'}
-        return jsonify(response), 200
     else:
         previous_block = blockchain.get_previous_block()
         previous_proof = previous_block['proof']
@@ -126,7 +127,7 @@ def mine_block():
                     'reciever': block['reciever'],
                     'previous_hash': block['previous_hash'],
                     'transactions': block['transactions']}
-        return jsonify(response), 200
+    return jsonify(response), 200
 
 
 @app.route('/get_chain', methods=['GET'])
@@ -149,17 +150,17 @@ def is_valid():
     return jsonify(response), 200
 
 
-@app.route('/add_transaction', methods=['POST'])
+@app.route('/new_transaction', methods=['POST'])
 # Adding a new transaction to the Blockchain
-def add_transaction():
+def new_transaction():
     json = request.get_json()
-    transaction_keys = ['sender', 'receiver', 'amount']
-    if not all(key in json for key in transaction_keys):
-        return 'Some elements of the transaction are missing', 400
     pool_length = blockchain.add_transaction(
         json['sender'], json['receiver'], json['amount'])
-    response = {'message': f'This transaction has been added to the pool. Please wait for it to be mined. The pool is {pool_length} transaction(s) long.' }
-    return jsonify(response), 201
+    transaction_message = f'This transaction has been added to the pool. Please wait for it to be mined. The pool is {pool_length} transaction(s) long.'
+    the_response = {'message': transaction_message}
+    print(the_response)
+    return jsonify(the_response)
+    
 
 
 @app.route('/connect_node', methods=['POST'])
@@ -173,7 +174,7 @@ def connect_node():
         blockchain.add_node(node)
     response = {'message': 'All the nodes are now connected. The Montycoin Blockchain now contains the following nodes:',
                 'total_nodes': list(blockchain.nodes)}
-    return jsonify(response), 201
+    return jsonify(response)
 
 
 @app.route('/replace_chain', methods=['GET'])
@@ -186,23 +187,28 @@ def replace_chain():
     else:
         response = {'message': 'All good. The chain is the largest one.',
                     'actual_chain': blockchain.chain}
-    return jsonify(response), 200
+    return jsonify(response)
 
 
-@app.route('/see_transactions', methods=['GET'])
+@app.route('/see_transactions', methods=['POST'])
 def see_transactions():
     sender_list = []
     reciever_list = []
-    data = requests.json()
-    key = data.get('Public Key')
-    for block in self.blockchain():
+    data = request.get_json()
+    key = data.get('Public_Key')
+    for block in blockchain.chain:
         if block['sender'] == key:
            sender_list.append(block)
         else:
             if block['reciever'] == key:
                 reciever_list.append(block)
-    response = {'sender_transactions': sender_list, 'reciever_transactions': reciever_list}
-    return response
+    if len(reciever_list) > 0:
+        the_response = {'sender_transactions': sender_list, 'reciever_transactions': reciever_list}
+    else:
+        failed = 'None Found.'
+        the_response = {'sender_transactions': sender_list, 'reciever_transactions': failed}
+
+    return jsonify(the_response)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--port', type=int, default=5001, help='port to listen on')
