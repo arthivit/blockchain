@@ -19,8 +19,6 @@ class Wallet:
         self.rawPublicKey = self.privateKey * curve.g
         self.publicKey = '0' + str(2 + self.rawPublicKey.y % 2) + str(hex(self.rawPublicKey.x)[2:])
     
-       
-
     
     def return_pubkey(self):
         pubkey = self.publicKey
@@ -29,17 +27,11 @@ class Wallet:
     def return_balance(self):
         return self.balance
 
-      #find transactions with my public key
-      #add them to my balance?
-      #Blockchain.get_chain()
-
-      ##represent transactions with my public key (seperated by sender and reciever?) in wallet
 
 
 wallet = Wallet()
 
 app = Flask(__name__)
-
 
 
 @app.route('/get_public_key', methods=['GET'])
@@ -48,34 +40,26 @@ def get_public_key():
     response = str(public_key)
     return jsonify(response)
 
-@app.route('/get_balance')
+@app.route('/get_balance', methods=['GET'])
 def get_balance():
-    mybalance = wallet.return_balance()
+    mybalance = wallet.balance
     return jsonify({"balance": mybalance})
 
-@app.route('/send_funds', methods=['POST'])
-def send_funds():
-    data = request.json
-    recipient = data.get("recipient key")
-    amount = data.get("amount")
-
-    if recipient and amount:
-        wallet.balance -= amount
-        return "Funds sent successfully!", 200
-    else:
-        return "Invalid request", 400
 
 @app.route('/add_balance', methods=['POST'])
 def add_balance():
-   data = request.json
-   amount = data.get("amount")
-   tradnum = data.get("traditional currency")
-
-   if tradnum and amount:
-      wallet.balance += amount
-      return "Funds added successfully!", 200
-   else:
-      return "Invalid request", 400
+    data = request.get_json()
+    amount = int(data['amount'])
+    tradnum = data['tradcur']
+    the_response = {'balance':'', 'message': ''}
+    if amount > 0:
+        wallet.balance += amount
+        the_response = {'balance': wallet.balance, 'message': 'Funds added successfully!'}
+    else:
+        wallet.balance -= amount
+        the_response = {'balance': wallet.balance, 'message': 'Funds removed successfully!'}
+    return jsonify(the_response)
+      
 
 
 if __name__ == '__main__':

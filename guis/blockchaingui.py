@@ -1,4 +1,4 @@
-from montycoin import Blockchain
+#from montycoin import Blockchain
 import tkinter as tk
 from tkinter import ttk
 from flask import Flask, jsonify, request
@@ -10,93 +10,99 @@ class BlockchainGui:
         self.root = root
         self.root.title("Blockchain")
 
-        self.instructions = tk.Label(root, text="First pick a node, then select your functions!", background="pale turquoise", font="AppleMyungjo 22")
+        self.instructions = tk.Label(root, text='First pick a node...', background="pale turquoise", font="AppleMyungjo 22")
         self.instructions.grid(row=0, column=1)
         self.node_picker = ttk.Combobox(
                     state="readonly",
                     values=["5001", "5002", "5003", "5004"],
-                    background="pale turquoise",
-                    font='AppleMyungjo 22'
-        )
-        self.node_picker.grid(row=5, column=1, pady=2)
+                    background="pale turquoise")
+
+    #node picker
+        self.node_picker.grid(row=1, column=1, padx=10)
         self.node_confirm = tk.Button(root, text="Confirm Node", command=self.select_node, background="pale turquoise", font="AppleMyungjo 22")
-        self.node_confirm.grid(row=6, column=1)
+        self.node_confirm.grid(row=2, column=1, padx=10, pady=5)
         self.node = ""
-
-#add transactions
-    #sender
-        self.sender_label= tk.Label(root, text="Sender:", background="pale turquoise",font="AppleMyungjo 22", )
-        self.sender_label.grid(row=7, column=1)
-        self.sender_entry = tk.Entry(root, bg="pale turquoise", font="AppleMyungjo 22")
-        self.sender_entry.grid(row=7, column=2)
-
-    #reciever
-        self.reciever_label = tk.Label(root, text="Reciever:", background="pale turquoise",font="AppleMyungjo 22")
-        self.reciever_label.grid(row=8, column=1)
-        self.reciever_entry = tk.Entry(root, bg="pale turquoise", font="AppleMyungjo 22")
-        self.reciever_entry.grid(row=8, column=2)
-
-    #amount
-        self.amount_label = tk.Label(root, text="Amount:", background="pale turquoise",font="AppleMyungjo 22")
-        self.amount_label.grid(row=9, column=1)
-        self.amount_entry = tk.Entry(root, bg="pale turquoise", font="AppleMyungjo 22")
-        self.amount_entry.grid(row=9, column=2)
-
-    #add transaction button
-        self.add_transaction_button = tk.Button(root, text="Add Transaction", command=self.add_transaction, bg="pale turquoise", font="AppleMyungjo 22")
-        self.add_transaction_button.grid(row=10, columnspan=2, column=1, pady=5)
-        self.add_transaction_label= tk.Label(root,background="pale turquoise",font="AppleMyungjo 22", justify="right")
-        self.add_transaction_label.grid(row=11, column=1,pady=2)
+        self.instructions2 = tk.Label(root, text='...then select your functions!', background="pale turquoise", font="AppleMyungjo 22")
+        self.instructions2.grid(row=3, column=1, padx=10, pady=10)
 
 
+#""" BUTTONS """
 #mining
         self.mine_button = tk.Button(root, text="Mine Block", command=self.mine_block, background="pale turquoise", font="AppleMyungjo 22")
-        self.mine_button.grid(row=5, pady=2)
-        self.mine_label = tk.Label(root, background="pale turquoise", font="AppleMyungjo 22")
-        self.mine_label.grid(row=6, pady=2)
-
-
-#get chain
-        self.getchain_button = tk.Button(root, text="Get Chain", command=self.get_chain, background="pale turquoise", font="AppleMyungjo 22")
-        self.getchain_button.grid(row=7, pady=2)
-        self.getchain_label = tk.Label(root, background="pale turquoise", font="AppleMyungjo 22")
-        self.getchain_label.grid(row=8, pady=2)
-        
+        self.mine_button.grid(row=5, pady=20)
+        self.mine_label = tk.Label(root, background="pale turquoise", font="AppleMyungjo 12")
+        self.mine_label.grid(row=5, column=1, pady=20)
 
 #confirm chain
         self.isvalid_button = tk.Button(root, text="Confirm Chain?", command=self.is_valid, background="pale turquoise", font="AppleMyungjo 22")
-        self.isvalid_button.grid(row=9, pady=2)
+        self.isvalid_button.grid(row=6, padx=10)
         self.isvalid_label = tk.Label(root, background="pale turquoise", font="AppleMyungjo 22")
-        self.isvalid_label.grid(row=10, pady=2)  
+        self.isvalid_label.grid(row=6, column=1, pady=2)
 
+#get chain
+        self.getchain_button = tk.Button(root, text="Get Chain", command=self.get_chain, background="pale turquoise", font="AppleMyungjo 22")
+        self.getchain_button.grid(row=7, pady=20)
+        self.getchain_label = tk.Label(root, background="pale turquoise", font="AppleMyungjo 22")
+        self.getchain_label.grid(row=7, column=1, pady=2)
 
 #replace chain
         self.replace_chain_button = tk.Button(root, text="Replace Chain?", command=self.replace_chain, background="pale turquoise", font="AppleMyungjo 22")
-        self.replace_chain_button.grid(row=11, pady=2, column=0)
+        self.replace_chain_button.grid(row=8, padx=2)
         self.replace_chain_label = tk.Label(root, background="pale turquoise",font="AppleMyungjo 22", justify="right")
-        self.replace_chain_label.grid(row=12, column=0, pady=2)
+        self.replace_chain_label.grid(row=8, column=1, pady=2)
 
+#my transactions (defined by my public key)
+        self.transactions_button = tk.Button(root, text="My Transactions", command=self.see_transactions, background="pale turquoise", font="AppleMyungjo 22")
 
-# my transactions (defined by my public key)
-        self.transactions_button = tk.Button(root, text="See My Transactions", command=self.see_transactions, background="pale turquoise", font="AppleMyungjo 22")
-        self.transactions_button.grid(row=12, column=1, pady=2)
+        self.transactions_button.grid(row=9, column=0, pady=20, padx=10)
 
-        #i sent
-        self.transactions_label_sender = tk.Label(root, background="pale turquoise", font="AppleMyungjo 22")
-        self.transactions_label_sender.grid(row=13, column=2, pady=2)
-        
-        #i got
-        self.transactions_label_reciever = tk.Label(root, background="pale turquoise", font="AppleMyungjo 22")
-        self.transactions_label_reciever.grid(row=14, column=2, pady=2) 
-    
+#add transaction button
+        self.add_transaction_button = tk.Button(root, text="Add Transaction", command=self.add_transaction, bg="pale turquoise", font="AppleMyungjo 22")
+        self.add_transaction_button.grid(row=10)
+        self.add_transaction_label= tk.Label(root,background="pale turquoise",font="AppleMyungjo 22", justify="right")
+        self.add_transaction_label.grid(row=10, column=1)
 
 #connect node
+        self.connect_node_instruction = tk.Label(root, background="pale turquoise", font="AppleMyungjo 22")
+        self.connect_node_instruction.grid(row=11, column=1)
         self.node_button = tk.Button(root, text="Connect Node", command=self.connect_node, bg="pale turquoise", font="AppleMyungjo 22")
-        self.node_button.grid(row=13, column=0, pady=2)
+        self.node_button.grid(row=11, column=0, pady=20)
         self.node_text= tk.Text(root, bg="pale turquoise")
         self.node_text.grid_forget()
+        
 
+#""" RESPONSES """
 
+#add transactions response
+        self.sender_label= tk.Label(root, text="Sender:", background="pale turquoise",font="AppleMyungjo 22" )
+        self.sender_label.grid_forget()
+        self.sender_entry = tk.Entry(root, bg="pale turquoise", font="AppleMyungjo 22")
+        self.sender_entry.grid_forget()
+
+    #reciever
+        self.reciever_label = tk.Label(root, text="Reciever:", background="pale turquoise",font="AppleMyungjo 22")
+        self.reciever_label.grid_forget()
+        self.reciever_entry = tk.Entry(root, bg="pale turquoise", font="AppleMyungjo 22")
+        self.reciever_entry.grid_forget()
+
+    #amount
+        self.amount_label = tk.Label(root, text="Amount:", background="pale turquoise",font="AppleMyungjo 22")
+        self.amount_label.grid_forget()
+        self.amount_entry = tk.Entry(root, bg="pale turquoise", font="AppleMyungjo 22")
+        self.amount_entry.grid_forget()
+
+   
+
+    #i sent
+        self.transactions_sender = tk.Text(root, background="pale turquoise", font="AppleMyungjo 12")
+        self.transactions_sender.grid_forget()
+        #self.transactions_sender.grid(row=5, column=2)
+        
+    #i got
+        self.transactions_reciever = tk.Text(root, background="pale turquoise", font="AppleMyungjo 12")
+        self.transactions_reciever.grid_forget()
+        #self.transactions_reciever.grid(row=6, column=2) 
+    
 
 # button functions
 
@@ -108,23 +114,27 @@ class BlockchainGui:
         self.mine_label.config(text="")
         self.node = self.node_picker.get()
         response = requests.get(f'http://localhost:{self.node}/mine_block')
-        self.mine_label.config(text="Block mined successfully!")
+        block = response.json()
+        if block['message'] == 'Congratulations, you just mined a block!':
+            self.mine_label.config(text=f"{block}")
+        else:
+            self.mine_label.config(text=f"{block['message']}")
 
-
+ 
 
     def get_chain(self):
         self.node = self.node_picker.get()
         data = requests.get(f'http://localhost:{self.node}/get_chain')
-        chain = data['chain']
-        length = data['length']
+        chain = data.json()['chain']
+        length = data.json()['length']
         self.getchain_label.config(text=f"Length: {length} /n Chain: {chain}") #MAKE A LIST
         
 
 
     def is_valid(self):
         response = requests.get(f'http://localhost:{self.node}/confirm_chain')
-        if response == "All good. The Blockchain is valid.":
-            self.isvalid_label.config(text="All good!")
+        if response.json()['message'] == "All good. The Blockchain is valid.":
+            self.isvalid_label.config(text="All good! Blockchain is valid.")
         else:
             self.isvalid_label.config(text="Uh oh... Blockchain is NOT valid.")
     
@@ -142,9 +152,9 @@ class BlockchainGui:
         self.reciever_entry.delete(0, tk.END)
         self.sender_entry.delete(0, tk.END)
         self.amount_entry.delete(0, tk.END)
-        message = response['message']
-        self.add_transaction_label.config(text=message)
-        self.add_transaction_label.after(3000, lambda: self.add_transaction_label.config(text=''))
+        message = response.json()['message']
+        self.add_transaction_label.config(text=f'{message}')
+        self.add_transaction_label.after(30000, lambda: self.add_transaction_label.config(text=''))
 
 
 
@@ -157,15 +167,16 @@ class BlockchainGui:
         }
         response = requests.get(f'http://localhost:{self.node}/connect_node', data=data)
 
-        message = response['message']
-        total_nodes = response['total_nodes']
+        message = response.json()['message']
+        total_nodes = response.json()['total_nodes']
         self.connect_node_text.config(text=f"{message} {total_nodes}")
 
 
 
     def replace_chain(self):
         response = requests.get(f'http://localhost:{self.node}/replace_chain')
-        if response["message"] == 'All good. The chain is the largest one.':
+        message = response.json()['message']
+        if message == 'All good. The chain is the largest one.':
             self.replace_chain_label.config(text="All good!")
         else:
             self.replace_chain_label.config(text="Replaced by longest chain.")
@@ -174,8 +185,8 @@ class BlockchainGui:
     def see_transactions(self):
         response = requests.get(f'http://localhost:{self.node}/see_transactions')
 
-        reciever = response['reciever_transactions']
-        sender = response['sender_transactions']
+        reciever = response.json()['reciever_transactions']
+        sender = response.json()['sender_transactions']
 
         self.transactions_label_sender.config(text=f'Sender Transactions: {sender}')
         self.transactions_label_sender.after(3000, lambda: self.transactions_label_sender.config(text=''))
