@@ -20,13 +20,12 @@ class WalletGui:
         self.pubkey = self.initpubkey.json()
         
 
-# my balance to start
+# my balance to start from the wallet class
         self.initbal = requests.get("http://localhost:5010/get_balance",)
         self.balance = int(self.initbal.json()["balance"])
         self.balance_label = tk.Label(root, text=f"Balance: ${self.balance}", background="pale turquoise", font="AppleMyungjo 22")
         self.balance_label.grid(row=3, column=1)
         
-
 #instructions
 
         self.instructions = tk.Label(root, text='First pick a node...', background="pale turquoise", font="AppleMyungjo 22")
